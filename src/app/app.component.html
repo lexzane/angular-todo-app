@@ -9,16 +9,7 @@
         data-cy="ToggleAllButton"
       ></button>
 
-      <form (ngSubmit)="handleFormSubmit()" [formGroup]="todoForm">
-        <input
-          data-cy="NewTodoField"
-          type="text"
-          class="todoapp__new-todo"
-          [style.backgroundColor]="title.errors && title.dirty ? '#f88' : ''"
-          placeholder="What needs to be done?"
-          formControlName="title"
-        />
-      </form>
+      <app-todo-form (save)="addTodo($event)"></app-todo-form>
     </header>
 
     <section class="todoapp__main" data-cy="TodoList">

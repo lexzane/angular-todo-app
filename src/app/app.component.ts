@@ -2,6 +2,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Todo } from './types/todo';
 
+const todosFromServer = [
+  { id: 1, title: 'TypeScript', completed: true },
+  { id: 2, title: 'React', completed: false },
+  { id: 3, title: 'Angular', completed: true },
+];
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,22 +15,7 @@ import { Todo } from './types/todo';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  todos = [
-    { id: 1, title: 'TypeScript', completed: true },
-    { id: 2, title: 'React', completed: false },
-    { id: 3, title: 'Angular', completed: true },
-  ];
-
-  todoForm = new FormGroup({
-    title: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3)],
-    }),
-  });
-
-  get title() {
-    return this.todoForm.get('title') as FormControl;
-  }
+  todos: Todo[] = todosFromServer;
 
   get activeTodos() {
     return this.todos.filter((todo) => !todo.completed);
@@ -32,15 +23,6 @@ export class AppComponent {
 
   trackById(i: number, todo: Todo) {
     return todo.id;
-  }
-
-  handleFormSubmit() {
-    if (this.todoForm.invalid) {
-      return;
-    }
-
-    this.addTodo(this.title.value);
-    this.todoForm.reset();
   }
 
   addTodo(newTitle: string) {
