@@ -30,6 +30,10 @@ export class AppComponent {
     return this.todos.filter((todo) => !todo.completed);
   }
 
+  trackById(i: number, todo: Todo) {
+    return todo.id;
+  }
+
   addTodo() {
     if (this.todoForm.invalid) {
       return;
