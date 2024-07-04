@@ -1,20 +1,20 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Todo } from './types/todo';
-
-const todos = [
-  { id: 1, title: 'TypeScript', completed: true },
-  { id: 2, title: 'React', completed: false },
-  { id: 3, title: 'Angular', completed: true },
-];
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  todos = todos;
+  todos = [
+    { id: 1, title: 'TypeScript', completed: true },
+    { id: 2, title: 'React', completed: false },
+    { id: 3, title: 'Angular', completed: true },
+  ];
+
   todoForm = new FormGroup({
     title: new FormControl('', {
       nonNullable: true,
@@ -34,18 +34,38 @@ export class AppComponent {
     return todo.id;
   }
 
-  addTodo() {
+  handleFormSubmit() {
     if (this.todoForm.invalid) {
       return;
     }
 
+    this.addTodo(this.title.value);
+    this.todoForm.reset();
+  }
+
+  addTodo(newTitle: string) {
     const newTodo: Todo = {
       id: Date.now(),
-      title: this.title.value as string,
+      title: newTitle,
       completed: false,
     };
 
-    this.todos.push(newTodo);
-    this.todoForm.reset();
+    this.todos = [...this.todos, newTodo];
+  }
+
+  toggleTodo(todoId: number) {
+    this.todos = this.todos.map((todo) =>
+      todo.id !== todoId ? todo : { ...todo, completed: !todo.completed }
+    );
+  }
+
+  renameTodo(todoId: number, title: string) {
+    this.todos = this.todos.map((todo) =>
+      todo.id !== todoId ? todo : { ...todo, title }
+    );
+  }
+
+  deleteTodo(todoId: number) {
+    this.todos = this.todos.filter((todo) => todo.id !== todoId);
   }
 }
