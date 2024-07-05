@@ -31,6 +31,9 @@ export class AppComponent implements OnInit {
       .subscribe(todos => {
         this.todos = todos;
       });
+
+    this.todosService.loadTodos()
+      .subscribe();
   }
 
   trackById(i: number, todo: Todo) {
