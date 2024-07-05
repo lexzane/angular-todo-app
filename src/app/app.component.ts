@@ -27,9 +27,10 @@ export class AppComponent implements OnInit {
   constructor(private todosService: TodosService) {}
 
   ngOnInit(): void {
-    this.todosService.getTodos().subscribe(todos => {
-      this.todos = todos;
-    });
+    this.todosService.todos$
+      .subscribe(todos => {
+        this.todos = todos;
+      });
   }
 
   trackById(i: number, todo: Todo) {
@@ -37,28 +38,22 @@ export class AppComponent implements OnInit {
   }
 
   addTodo(newTitle: string) {
-    const newTodo: Todo = {
-      id: Date.now(),
-      title: newTitle,
-      completed: false,
-    };
-
-    this.todos = [...this.todos, newTodo];
+    this.todosService.createTodo(newTitle)
+      .subscribe();
   }
 
-  toggleTodo(todoId: number) {
-    this.todos = this.todos.map(todo =>
-      todo.id !== todoId ? todo : { ...todo, completed: !todo.completed },
-    );
+  toggleTodo(todo: Todo) {
+    this.todosService.updateTodo({ ...todo, completed: !todo.completed })
+      .subscribe();
   }
 
-  renameTodo(todoId: number, title: string) {
-    this.todos = this.todos.map(todo =>
-      todo.id !== todoId ? todo : { ...todo, title },
-    );
+  renameTodo(todo: Todo, title: string) {
+    this.todosService.updateTodo({ ...todo, title })
+      .subscribe();
   }
 
-  deleteTodo(todoId: number) {
-    this.todos = this.todos.filter(todo => todo.id !== todoId);
+  deleteTodo(todo: Todo) {
+    this.todosService.deleteTodo(todo)
+      .subscribe();
   }
 }
