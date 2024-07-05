@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Todo } from './types/todo';
 
@@ -14,11 +14,27 @@ const todosFromServer = [
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {
-  todos: Todo[] = todosFromServer;
+export class AppComponent implements OnInit {
+  _todos: Todo[] = [];
+  activeTodos: Todo[] = [];
 
-  get activeTodos() {
-    return this.todos.filter((todo) => !todo.completed);
+  get todos() {
+    return this._todos;
+  }
+
+  set todos(todos: Todo[]) {
+    if (todos === this._todos) {
+      return;
+    }
+
+    this._todos = todos;
+    this.activeTodos = this._todos.filter((todo) => !todo.completed);
+  }
+
+  constructor() {}
+
+  ngOnInit(): void {
+    this.todos = todosFromServer;
   }
 
   trackById(i: number, todo: Todo) {
