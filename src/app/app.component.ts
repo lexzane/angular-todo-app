@@ -1,18 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Todo } from './types/todo';
-
-const todosFromServer = [
-  { id: 1, title: 'TypeScript', completed: true },
-  { id: 2, title: 'React', completed: false },
-  { id: 3, title: 'Angular', completed: true },
-];
+import { TodosService } from './services/todos.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
   _todos: Todo[] = [];
@@ -28,13 +21,15 @@ export class AppComponent implements OnInit {
     }
 
     this._todos = todos;
-    this.activeTodos = this._todos.filter((todo) => !todo.completed);
+    this.activeTodos = this._todos.filter(todo => !todo.completed);
   }
 
-  constructor() {}
+  constructor(private todosService: TodosService) {}
 
   ngOnInit(): void {
-    this.todos = todosFromServer;
+    this.todosService.getTodos().subscribe(todos => {
+      this.todos = todos;
+    });
   }
 
   trackById(i: number, todo: Todo) {
@@ -52,18 +47,18 @@ export class AppComponent implements OnInit {
   }
 
   toggleTodo(todoId: number) {
-    this.todos = this.todos.map((todo) =>
-      todo.id !== todoId ? todo : { ...todo, completed: !todo.completed }
+    this.todos = this.todos.map(todo =>
+      todo.id !== todoId ? todo : { ...todo, completed: !todo.completed },
     );
   }
 
   renameTodo(todoId: number, title: string) {
-    this.todos = this.todos.map((todo) =>
-      todo.id !== todoId ? todo : { ...todo, title }
+    this.todos = this.todos.map(todo =>
+      todo.id !== todoId ? todo : { ...todo, title },
     );
   }
 
   deleteTodo(todoId: number) {
-    this.todos = this.todos.filter((todo) => todo.id !== todoId);
+    this.todos = this.todos.filter(todo => todo.id !== todoId);
   }
 }
