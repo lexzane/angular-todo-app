@@ -10,9 +10,15 @@ import {
   provideHttpClient,
   withInterceptorsFromDi,
 } from '@angular/common/http';
+import { MessageComponent } from './components/message/message.component';
 
 @NgModule({
-  declarations: [AppComponent, TodoComponent, TodoFormComponent],
+  declarations: [
+    AppComponent,
+    TodoComponent,
+    TodoFormComponent,
+    MessageComponent,
+  ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule],
   providers: [provideHttpClient(withInterceptorsFromDi())],
   bootstrap: [AppComponent],

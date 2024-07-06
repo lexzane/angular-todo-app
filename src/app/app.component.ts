@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Todo } from './types/todo';
 import { TodosService } from './services/todos.service';
+import { MessageService } from './services/message.service';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ import { TodosService } from './services/todos.service';
 export class AppComponent implements OnInit {
   _todos: Todo[] = [];
   activeTodos: Todo[] = [];
+  errorMessage = '';
 
   get todos() {
     return this._todos;
@@ -24,7 +26,10 @@ export class AppComponent implements OnInit {
     this.activeTodos = this._todos.filter(todo => !todo.completed);
   }
 
-  constructor(private todosService: TodosService) {}
+  constructor(
+    private todosService: TodosService,
+    private messageService: MessageService,
+  ) { }
 
   ngOnInit(): void {
     this.todosService.todos$
@@ -33,7 +38,9 @@ export class AppComponent implements OnInit {
       });
 
     this.todosService.loadTodos()
-      .subscribe();
+      .subscribe({
+        error: () => this.messageService.showMessage('Unable to load todos'),
+      });
   }
 
   trackById(i: number, todo: Todo) {
@@ -42,21 +49,29 @@ export class AppComponent implements OnInit {
 
   addTodo(newTitle: string) {
     this.todosService.createTodo(newTitle)
-      .subscribe();
+      .subscribe({
+        error: () => this.messageService.showMessage('Unable to add a todo'),
+      });
   }
 
   toggleTodo(todo: Todo) {
     this.todosService.updateTodo({ ...todo, completed: !todo.completed })
-      .subscribe();
+      .subscribe({
+        error: () => this.messageService.showMessage('Unable to toggle a todo'),
+      });
   }
 
   renameTodo(todo: Todo, title: string) {
     this.todosService.updateTodo({ ...todo, title })
-      .subscribe();
+      .subscribe({
+        error: () => this.messageService.showMessage('Unable to rename a todo'),
+      });
   }
 
   deleteTodo(todo: Todo) {
     this.todosService.deleteTodo(todo)
-      .subscribe();
+      .subscribe({
+        error: () => this.messageService.showMessage('Unable to delete a todo'),
+      });
   }
 }
