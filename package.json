@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "ng deploy --repo=https://github.com/lexzane/angular-todo-app.git"
+    "deploy": "ng deploy --base-href=https://lexzane.github.io/angular-todo-app/"
   },
   "private": true,
   "dependencies": {
